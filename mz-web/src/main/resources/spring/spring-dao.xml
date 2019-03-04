@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:contxt="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <!--加载数据库配置文件-->
+    <contxt:property-placeholder location="classpath:resource/db.properties"></contxt:property-placeholder>
+    <!--配置数据源-数据库连接池-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driver}"></property>
+        <property name="url" value="${jdbc.url}"></property>
+        <property name="username" value="${jdbc.username}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+        <property name="testOnBorrow" value="true"></property>
+        <property name="testOnReturn" value="false"></property>
+        <property name="maxActive" value="10"></property>
+        <property name="minIdle" value="5"></property>
+    </bean>
+    <!-- 创建mybatis的上下文对象-->
+    <bean  id="sea" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <property name="configLocation">
+            <value>classpath:mybatis/mybatis.xml</value>
+        </property>
+    </bean>
+    <!-- 扫描mybatis的接口与映射配置文件-->
+    <bean  class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="cn.info.mapper"></property>
+    </bean>
+</beans>
